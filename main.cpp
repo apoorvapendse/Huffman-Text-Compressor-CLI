@@ -1,6 +1,13 @@
 #include <iostream>
 #include <map>
 
+/*
+    Todo:
+        get char freq - done
+        build huff tree
+        write encode function
+*/
+
 using namespace std;
 
 class node{
@@ -11,6 +18,7 @@ class node{
     node* right;
 };
 
+// function to find char freq using map
 map<char, int> charFreq(string str){
     map<char, int> freqTable;
     for(char i : str)
