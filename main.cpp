@@ -1,6 +1,7 @@
 #include <iostream>
 #include <map>
 #include <queue>
+#include<unordered_map>
 
 /*
     Todo:
@@ -10,6 +11,7 @@
 */
 
 using namespace std;
+
 
 class node{
     public:
@@ -59,17 +61,22 @@ node* BuildHuffTree(map<char, int> freqTable){
     priority_queue<node*, vector<node*>, comp> pq;
     // wtf is auto??
     for(auto pair: freqTable){
+        //adding nodes to priority queue in increasing order of frequency
         pq.push(new node(pair.first, pair.second, NULL, NULL));
     }
 
     // creating the nodes
     while(pq.size() != 1){
+        //left node 
         node* l = pq.top();
         pq.pop();
+        //right node
         node* r = pq.top();
         pq.pop();
 
         int sum = l->freq + r->freq;
+        //pushing null character containing the sum of the left and right nodes and having the left and right nodes
+        //as its children
         pq.push(new node('\0', sum, l, r));
     }
 
@@ -77,13 +84,71 @@ node* BuildHuffTree(map<char, int> freqTable){
     return root;
 }
 
+void inorderTraversal(node* root){
+     if(root==NULL)return;
+     inorderTraversal(root->left);
+     cout<<root->ch<<" ";
+     inorderTraversal(root->right);
+
+}
+
+void printSummary(int stringLength,unordered_map<char,string> &huffMap,string para){
+    int decodedLength = stringLength * 8;
+    int encodedLength = 0;
+    for(auto ch:para){
+        encodedLength+=huffMap[ch].length();//huffMap[ch] will give corresponding huffman binary string whose len we will add to encoded data
+
+    }
+    int mapSize = 0;
+    for(auto pair:huffMap){
+        cout<<pair.second.length()<<" "<<endl;
+       //adding 8 for every iteration since ascii represn of every char takes 8 bits
+        mapSize +=   8+pair.second.length();;
+        cout<<mapSize<<endl;
+    }
+    
+    cout<<endl;
+    cout<<"initial length:"<<decodedLength<<endl;
+    cout<<"encoded length:"<<encodedLength<<endl;
+    float ratio = float(encodedLength+mapSize)/float(decodedLength);
+    cout<<"map size:"<<mapSize<<endl;
+    cout<<"size reduced to :"<<ratio*100<<"%"<<endl;
+    cout<<"bits saved:"<<decodedLength-(mapSize+encodedLength)<<endl;
+
+}
+
+void buildCharToBinaryMapping(node* root, string bin,unordered_map<char,string> &huffMap) {
+    if (root == NULL) return;
+  
+    buildCharToBinaryMapping(root->left, bin + "0",huffMap);
+    //jar current node cha character not equal to MrRightNa, then add it to the map along with its huffman bin reprsn
+    if(root->ch!='\0'){
+
+    cout << root->ch << " : " << bin << endl;
+    huffMap[root->ch] = bin;
+
+    }
+    buildCharToBinaryMapping(root->right, bin + "1",huffMap);
+}
+
+
 int main(){
     // string para = string("linus benedict torvalds is a finnish software engineer who is the creator and, historically, the lead developer of the linux kernel, used by linux distributions and other operating systems such as android. he also created the distributed version control system git");
 
-    string para = string("aaaaabbbcc");
+    string para = string("bccabbddaeccbbaeddccbb");
     map<char, int> freqTable = charFreq(para);
 
     node* huffRoot = BuildHuffTree(freqTable);
+   
+    unordered_map<char,string> huffMap;
+    //huffMap will store the mapping of character to its corresponding huffman code;
+    cout<<"\nhuffman tree mapping:"<<endl;
+    buildCharToBinaryMapping(huffRoot,"",huffMap);
+
+    printSummary(para.length(),huffMap,para);
+
+
+   
 
     // a bug in tree that needs to be solved
 }
