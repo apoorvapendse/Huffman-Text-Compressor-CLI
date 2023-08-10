@@ -99,10 +99,19 @@ void printSummary(int stringLength,unordered_map<char,string> &huffMap,string pa
         encodedLength+=huffMap[ch].length();//huffMap[ch] will give corresponding huffman binary string whose len we will add to encoded data
 
     }
+    int mapSize = 0;
+    for(auto pair:huffMap){
+        cout<<pair.second.length()<<" "<<endl;
+       //adding 8 for every iteration since ascii represn of every char takes 8 bits
+        mapSize +=   8+pair.second.length();;
+        cout<<mapSize<<endl;
+    }
     
     cout<<endl;
     cout<<"initial length:"<<decodedLength<<endl;
     cout<<"encoded length:"<<encodedLength<<endl;
+    cout<<"map size:"<<mapSize<<endl;
+    cout<<"bits saved:"<<decodedLength-(mapSize+encodedLength)<<endl;
 
 }
 
