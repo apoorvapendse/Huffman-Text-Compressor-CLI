@@ -110,7 +110,9 @@ void printSummary(int stringLength,unordered_map<char,string> &huffMap,string pa
     cout<<endl;
     cout<<"initial length:"<<decodedLength<<endl;
     cout<<"encoded length:"<<encodedLength<<endl;
+    float ratio = float(encodedLength+mapSize)/float(decodedLength);
     cout<<"map size:"<<mapSize<<endl;
+    cout<<"size reduced to :"<<ratio*100<<"%"<<endl;
     cout<<"bits saved:"<<decodedLength-(mapSize+encodedLength)<<endl;
 
 }
