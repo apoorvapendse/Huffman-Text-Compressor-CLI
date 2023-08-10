@@ -133,7 +133,7 @@ void buildCharToBinaryMapping(node* root, string bin,unordered_map<char,string> 
 int main(){
     // string para = string("linus benedict torvalds is a finnish software engineer who is the creator and, historically, the lead developer of the linux kernel, used by linux distributions and other operating systems such as android. he also created the distributed version control system git");
 
-    string para = string("bccabbddaeccbbaeddcc");
+    string para = string("bccabbddaeccbbaeddccbb");
     map<char, int> freqTable = charFreq(para);
 
     node* huffRoot = BuildHuffTree(freqTable);
