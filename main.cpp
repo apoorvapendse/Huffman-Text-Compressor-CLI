@@ -2,12 +2,15 @@
 #include <map>
 #include <queue>
 #include<unordered_map>
+#include <vector>
 
 /*
     Todo:
         get char freq - done
-        build huff tree
-        write encode function
+        build huff tree - done
+        write encode function which returns a bin string - done
+        write decode function - done
+        create the argc argv functionality
 */
 
 using namespace std;
@@ -97,7 +100,6 @@ void printSummary(int stringLength,unordered_map<char,string> &huffMap,string pa
     int encodedLength = 0;
     for(auto ch:para){
         encodedLength+=huffMap[ch].length();//huffMap[ch] will give corresponding huffman binary string whose len we will add to encoded data
-
     }
     int mapSize = 0;
     for(auto pair:huffMap){
@@ -121,10 +123,8 @@ void buildCharToBinaryMapping(node* root, string bin,unordered_map<char,string> 
     buildCharToBinaryMapping(root->left, bin + "0",huffMap);
     //jar current node cha character not equal to MrRightNa, then add it to the map along with its huffman bin reprsn
     if(root->ch!='\0'){
-
-    cout << root->ch << " : " << bin << endl;
-    huffMap[root->ch] = bin;
-
+        cout << root->ch << " : " << bin << endl;
+        huffMap[root->ch] = bin;
     }
     buildCharToBinaryMapping(root->right, bin + "1",huffMap);
 }
@@ -134,10 +134,7 @@ string createEncodedString(string para, unordered_map<char,string>&HuffMap){
     for(auto ch: para){
         encoded +=HuffMap[ch];
     }
-    
     return encoded;
-
-
 }
 
 string decodeEncodedString(string encodedStr,unordered_map<char,string>&HuffMap){
@@ -157,6 +154,45 @@ string decodeEncodedString(string encodedStr,unordered_map<char,string>&HuffMap)
 
 }
 
+// unnecessary code
+// takes text and huffMap as input and outputs the bin string
+string encode(string para, unordered_map<char, string> huffMap){
+    // evaluating the length of compressed string;
+    int encodedLength;
+    for(auto ch:para){
+        encodedLength+=huffMap[ch].length();
+    }
+    // making char array of required length
+    string output;
+    output.reserve(encodedLength);
+    for(auto ch: para){
+        output.append(huffMap[ch]);
+    }
+    return output;
+}
+
+// decode takes the bin string, huffman tree and converts it to text
+vector<char> decode(node* root, string bin){
+    node* rootCopy = root;
+    int binItr = 0;
+    vector<char> decodedText;
+    while(binItr < bin.size()){
+        if(root->ch == '\0' && bin[binItr] == '0'){
+            root = root->left;
+            binItr++;
+        }
+        else if(root->ch == '\0' && bin[binItr] == '1'){
+            root = root->right;
+            binItr++;
+        }
+        else if(root->ch != '\0'){
+            decodedText.push_back(root->ch);
+            root = rootCopy;
+        }
+    }
+    decodedText.push_back(root->ch);
+    return decodedText;
+}
 
 int main(){
     // string para = string("linus benedict torvalds is a finnish software engineer who is the creator and, historically, the lead developer of the linux kernel, used by linux distributions and other operating systems such as android. he also created the distributed version control system git");
@@ -174,9 +210,6 @@ int main(){
     buildCharToBinaryMapping(huffRoot,"",huffMap);
 
     printSummary(para.length(),huffMap,para);
-
-
-
 
    string encoded =  createEncodedString(para,huffMap);
    cout<<endl<<"encoded string:"<<encoded<<endl;
