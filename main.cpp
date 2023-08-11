@@ -194,31 +194,40 @@ vector<char> decode(node* root, string bin){
     return decodedText;
 }
 
-int main(int argc, char* argv[]){
+int main(int argc, char** argv){
     // string para = string("linus benedict torvalds is a finnish software engineer who is the creator and, historically, the lead developer of the linux kernel, used by linux distributions and other operating systems such as android. he also created the distributed version control system git");
 
-   string para;
-if (argc >= 2) {
-    para = argv[1];  // Assign the value to the outer para
-    std::cout << "Input string with spaces: " << para << std::endl;
-} else {
-    std::cout << "Please provide a string with spaces as an argument." << std::endl;
-}
+    // if there are insufficient parameters
+    if(argc != 3){
+        cout<<"usage:"<<endl;
+        cout<<"./main -parameter \"text that will be compressed\""<<endl;
+        cout<<"parameters:\n\t-e : encode given text string\n\t-d : decode given bin string"<<endl;
+        return 1;
+    }
+    // if there are sufficient parameters
+    else{
+        string input = argv[2];
+    
+        if(!(argv[1] == "-e")){
+            map<char, int> freqTable = charFreq(input);
+            node* huffRoot = BuildHuffTree(freqTable);
 
-   
-    map<char, int> freqTable = charFreq(para);
-    cout<<para;
-    node* huffRoot = BuildHuffTree(freqTable);
-   
-    unordered_map<char,string> huffMap;
-    //huffMap will store the mapping of character to its corresponding huffman code;
-    cout<<"\nhuffman tree mapping:"<<endl;
-    buildCharToBinaryMapping(huffRoot,"",huffMap);
+            cout<<"\nhuffman tree mapping:"<<endl;
+            unordered_map<char,string> huffMap;
+            buildCharToBinaryMapping(huffRoot,"",huffMap);
 
-    printSummary(para.length(),huffMap,para);
+            printSummary(input.length(),huffMap,input);
 
-   string encoded =  createEncodedString(para,huffMap);
-   cout<<endl<<"encoded string:"<<encoded<<endl;
-   string decoded = decodeEncodedString(encoded,huffMap);
-   cout<<endl<<"decoded string:"<<decoded<<endl;
+            string encoded =  createEncodedString(input,huffMap);
+            cout<<endl<<"encoded string:"<<encoded<<endl;
+        }
+        else if(argv[1] == "-d"){
+            // unordered_map<char,string> huffMap;
+            // buildCharToBinaryMapping(huffRoot,"",huffMap);
+            // string decoded = decodeEncodedString(input,huffMap);
+            // cout<<endl<<"decoded string:"<<decoded<<endl;
+        
+        }
+    }
+    return 0;
 }
