@@ -199,7 +199,7 @@ int main(){
 
     string para ;
     cout<<"Enter the text you wanna encode"<<endl;
-    cin>>para;
+    getline(cin,para);
     map<char, int> freqTable = charFreq(para);
 
     node* huffRoot = BuildHuffTree(freqTable);
