@@ -197,9 +197,7 @@ vector<char> decode(node* root, string bin){
 int main(){
     // string para = string("linus benedict torvalds is a finnish software engineer who is the creator and, historically, the lead developer of the linux kernel, used by linux distributions and other operating systems such as android. he also created the distributed version control system git");
 
-    string para ;
-    cout<<"Enter the string you want to encode and decode"<<endl;
-    cin>>para;
+    string para = string("bccabbddaeccbbaeddccbb");
     map<char, int> freqTable = charFreq(para);
 
     node* huffRoot = BuildHuffTree(freqTable);
