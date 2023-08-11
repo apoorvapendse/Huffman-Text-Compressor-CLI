@@ -161,7 +161,9 @@ string decodeEncodedString(string encodedStr,unordered_map<char,string>&HuffMap)
 int main(){
     // string para = string("linus benedict torvalds is a finnish software engineer who is the creator and, historically, the lead developer of the linux kernel, used by linux distributions and other operating systems such as android. he also created the distributed version control system git");
 
-    string para = string("bccabbddaeccbbaeddccbb");
+    string para ;
+    cout<<"Enter the string you want to encode and decode"<<endl;
+    cin>>para;
     map<char, int> freqTable = charFreq(para);
 
     node* huffRoot = BuildHuffTree(freqTable);
@@ -172,6 +174,9 @@ int main(){
     buildCharToBinaryMapping(huffRoot,"",huffMap);
 
     printSummary(para.length(),huffMap,para);
+
+
+
 
    string encoded =  createEncodedString(para,huffMap);
    cout<<endl<<"encoded string:"<<encoded<<endl;
