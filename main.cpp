@@ -194,14 +194,20 @@ vector<char> decode(node* root, string bin){
     return decodedText;
 }
 
-int main(){
+int main(int argc, char* argv[]){
     // string para = string("linus benedict torvalds is a finnish software engineer who is the creator and, historically, the lead developer of the linux kernel, used by linux distributions and other operating systems such as android. he also created the distributed version control system git");
 
-    string para ;
-    cout<<"Enter the text you wanna encode"<<endl;
-    getline(cin,para);
-    map<char, int> freqTable = charFreq(para);
+   string para;
+if (argc >= 2) {
+    para = argv[1];  // Assign the value to the outer para
+    std::cout << "Input string with spaces: " << para << std::endl;
+} else {
+    std::cout << "Please provide a string with spaces as an argument." << std::endl;
+}
 
+   
+    map<char, int> freqTable = charFreq(para);
+    cout<<para;
     node* huffRoot = BuildHuffTree(freqTable);
    
     unordered_map<char,string> huffMap;
