@@ -101,10 +101,8 @@ void printSummary(int stringLength,unordered_map<char,string> &huffMap,string pa
     }
     int mapSize = 0;
     for(auto pair:huffMap){
-        cout<<pair.second.length()<<" "<<endl;
        //adding 8 for every iteration since ascii represn of every char takes 8 bits
         mapSize +=   8+pair.second.length();;
-        cout<<mapSize<<endl;
     }
     
     cout<<endl;
@@ -131,6 +129,34 @@ void buildCharToBinaryMapping(node* root, string bin,unordered_map<char,string> 
     buildCharToBinaryMapping(root->right, bin + "1",huffMap);
 }
 
+string createEncodedString(string para, unordered_map<char,string>&HuffMap){
+    string encoded = "";
+    for(auto ch: para){
+        encoded +=HuffMap[ch];
+    }
+    
+    return encoded;
+
+
+}
+
+string decodeEncodedString(string encodedStr,unordered_map<char,string>&HuffMap){
+    string currentHuffStr = "";
+    string decoded = "";
+    for(auto ch:encodedStr){
+        currentHuffStr+=ch;
+        //check presence of given value to find the key in HuffMap by iterating over the map;
+        for(auto pair:HuffMap){
+            if(pair.second == currentHuffStr){
+                decoded +=pair.first;
+                currentHuffStr = "";//reset currentHuffString karan key sapadli
+            }
+        }
+    }
+    return decoded;
+
+}
+
 
 int main(){
     // string para = string("linus benedict torvalds is a finnish software engineer who is the creator and, historically, the lead developer of the linux kernel, used by linux distributions and other operating systems such as android. he also created the distributed version control system git");
@@ -147,8 +173,8 @@ int main(){
 
     printSummary(para.length(),huffMap,para);
 
-
-   
-
-    // a bug in tree that needs to be solved
+   string encoded =  createEncodedString(para,huffMap);
+   cout<<endl<<"encoded string:"<<encoded<<endl;
+   string decoded = decodeEncodedString(encoded,huffMap);
+   cout<<endl<<"decoded string:"<<decoded<<endl;
 }
