@@ -40,11 +40,11 @@ map<char, int> charFreq(string str){
 
     // printing the freqTable map
     // this code should be remove afterwards
-    map<char, int>:: iterator it = freqTable.begin();;
-    while (it != freqTable.end()){
-        cout << "Key: " << it->first << " Value: " << it->second << std::endl;
-        ++it;
-    }
+    // map<char, int>:: iterator it = freqTable.begin();;
+    // while (it != freqTable.end()){
+    //     cout << "Key: " << it->first << " Value: " << it->second << std::endl;
+    //     ++it;
+    // }
     
     return freqTable;
 }
@@ -108,12 +108,13 @@ void printSummary(int stringLength,unordered_map<char,string> &huffMap,string pa
     }
     
     cout<<endl;
-    cout<<"initial length:"<<decodedLength<<endl;
-    cout<<"encoded length:"<<encodedLength<<endl;
+    cout<<"Compression Performance"<<endl;
+    cout<<"Initial length: "<<decodedLength<<endl;
+    cout<<"Encoded length: "<<encodedLength<<endl;
     float ratio = float(encodedLength+mapSize)/float(decodedLength);
-    cout<<"map size:"<<mapSize<<endl;
-    cout<<"size reduced to :"<<ratio*100<<"%"<<endl;
-    cout<<"bits saved:"<<decodedLength-(mapSize+encodedLength)<<endl;
+    cout<<"Map size:"<<mapSize<<endl;
+    cout<<"Size reduced to :"<<ratio*100<<"%"<<endl;
+    cout<<"Bits saved: "<<decodedLength-(mapSize+encodedLength)<<endl;
 
 }
 
@@ -205,29 +206,36 @@ int main(int argc, char** argv){
         return 1;
     }
     // if there are sufficient parameters
+    // following block calls both the encode and decode functionality
     else{
+        // storing text passed as argument into a string
         string input = argv[2];
-    
-        if(!(argv[1] == "-e")){
-            map<char, int> freqTable = charFreq(input);
-            node* huffRoot = BuildHuffTree(freqTable);
 
-            cout<<"\nhuffman tree mapping:"<<endl;
-            unordered_map<char,string> huffMap;
-            buildCharToBinaryMapping(huffRoot,"",huffMap);
+        // creating char frequencey map and huffman tree
+        map<char, int> freqTable = charFreq(input);
+        node* huffRoot = BuildHuffTree(freqTable);
 
-            printSummary(input.length(),huffMap,input);
+        // creating huffMap from huffman tree
+        cout<<"Char to Bin Mapping"<<endl;
+        unordered_map<char,string> huffMap;
+        buildCharToBinaryMapping(huffRoot, "", huffMap);
 
-            string encoded =  createEncodedString(input,huffMap);
-            cout<<endl<<"encoded string:"<<encoded<<endl;
-        }
-        else if(argv[1] == "-d"){
-            // unordered_map<char,string> huffMap;
-            // buildCharToBinaryMapping(huffRoot,"",huffMap);
-            // string decoded = decodeEncodedString(input,huffMap);
-            // cout<<endl<<"decoded string:"<<decoded<<endl;
-        
-        }
+        printSummary(input.length(), huffMap, input);
+
+        // encoding the input string
+        string encoded =  createEncodedString(input, huffMap);
+        cout<<endl<<"Encoded string: "<<encoded<<endl;
+
+        // decoding the input string
+        string decoded = decodeEncodedString(encoded, huffMap);
+        cout<<endl<<"Decoded string: "<<decoded<<endl;
+
+        // comparing input and decoded string
+        cout<<"\nChecking data integrity after decompression..."<<endl;
+        if(input == decoded)
+            cout<<"Success ;)"<<endl;
+        else cout<<"Data Loss!!"<<endl;
     }
+
     return 0;
 }

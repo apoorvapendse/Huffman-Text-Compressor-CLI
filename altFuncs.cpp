@@ -1,4 +1,3 @@
-
 // #include<iostream>
 // #include<vector>
 // #include<map>
@@ -46,3 +45,44 @@
 //     return decodedText;
 // }
 
+/*
+alt main function
+can reuse this after huffMap is stored in a text file
+int main(int argc, char** argv){
+    // string para = string("linus benedict torvalds is a finnish software engineer who is the creator and, historically, the lead developer of the linux kernel, used by linux distributions and other operating systems such as android. he also created the distributed version control system git");
+
+    // if there are insufficient parameters
+    if(argc != 3){
+        cout<<"usage:"<<endl;
+        cout<<"./main -parameter \"text that will be compressed\""<<endl;
+        cout<<"parameters:\n\t-e : encode given text string\n\t-d : decode given bin string"<<endl;
+        return 1;
+    }
+    // if there are sufficient parameters
+    else{
+        string input = argv[2];
+    
+        if(!(argv[1] == "-e")){
+            map<char, int> freqTable = charFreq(input);
+            node* huffRoot = BuildHuffTree(freqTable);
+
+            cout<<"\nhuffman tree mapping:"<<endl;
+            unordered_map<char,string> huffMap;
+            buildCharToBinaryMapping(huffRoot,"",huffMap);
+
+            printSummary(input.length(),huffMap,input);
+
+            string encoded =  createEncodedString(input,huffMap);
+            cout<<endl<<"encoded string:"<<encoded<<endl;
+        }
+        else if(!(argv[1] == "-d")){
+            // unordered_map<char,string> huffMap;
+            // buildCharToBinaryMapping(huffRoot,"",huffMap);
+            // string decoded = decodeEncodedString(input,huffMap);
+            // cout<<endl<<"decoded string:"<<decoded<<endl;
+        
+        }
+    }
+    return 0;
+}
+*/
