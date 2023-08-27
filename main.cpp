@@ -267,7 +267,9 @@ int main(int argc, char** argv){
         text.close();
         text.open("linusRizzLord.txt");     // oddly closing and opening again solved problem
         string encoded =  createEncodedString(text, huffMap);
-        cout<<encoded<<endl;
+        cout<<"encoded string"<<encoded<<endl;
+
+        // just need to figure out how to write bits to file
         return 0;
     // }
 /*
