@@ -6,11 +6,11 @@
 
 /*
     Todo:
-        get char freq - done
-        build huff tree - done
-        write encode function which returns a bin string - done
-        write decode function - done
-        create the argc argv functionality
+        implement file handling
+            1. add cli parameter for file name
+            2. read file and compress
+            3. write to a new comperssed file
+
 */
 
 using namespace std;
