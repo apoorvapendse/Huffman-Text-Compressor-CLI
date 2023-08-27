@@ -3,6 +3,10 @@
 #include <queue>
 #include<unordered_map>
 #include <vector>
+#include <cstring>
+#include <fstream>
+
+#define VERSION 2.0.0
 
 /*
     Todo:
@@ -206,36 +210,44 @@ int main(int argc, char** argv){
         return 1;
     }
     // if there are sufficient parameters
-    // following block calls both the encode and decode functionality
-    else{
-        // storing text passed as argument into a string
-        string input = argv[2];
 
-        // creating char frequencey map and huffman tree
-        map<char, int> freqTable = charFreq(input);
-        node* huffRoot = BuildHuffTree(freqTable);
-
-        // creating huffMap from huffman tree
-        cout<<"Char to Bin Mapping"<<endl;
-        unordered_map<char,string> huffMap;
-        buildCharToBinaryMapping(huffRoot, "", huffMap);
-
-        printSummary(input.length(), huffMap, input);
-
-        // encoding the input string
-        string encoded =  createEncodedString(input, huffMap);
-        cout<<endl<<"Encoded string: "<<encoded<<endl;
-
-        // decoding the input string
-        string decoded = decodeEncodedString(encoded, huffMap);
-        cout<<endl<<"Decoded string: "<<decoded<<endl;
-
-        // comparing input and decoded string
-        cout<<"\nChecking data integrity after decompression..."<<endl;
-        if(input == decoded)
-            cout<<"Success ;)"<<endl;
-        else cout<<"Data Loss!!"<<endl;
+    // following block for file handling
+    if(strcmp(argv[1], "-f") == 0){
+        
+        ifstream text;
+        text.open(argv[2]);
+        return 0;
     }
+
+    // following block for cli program
+    // storing text passed as argument into a string
+    string input = argv[2];
+
+    // creating char frequencey map and huffman tree
+    map<char, int> freqTable = charFreq(input);
+    node* huffRoot = BuildHuffTree(freqTable);
+
+    // creating huffMap from huffman tree
+    cout<<"Char to Bin Mapping"<<endl;
+    unordered_map<char,string> huffMap;
+    buildCharToBinaryMapping(huffRoot, "", huffMap);
+
+    printSummary(input.length(), huffMap, input);
+
+    // encoding the input string
+    string encoded =  createEncodedString(input, huffMap);
+    cout<<endl<<"Encoded string: "<<encoded<<endl;
+
+    // decoding the input string
+    string decoded = decodeEncodedString(encoded, huffMap);
+    cout<<endl<<"Decoded string: "<<decoded<<endl;
+
+    // comparing input and decoded string
+    cout<<"\nChecking data integrity after decompression..."<<endl;
+    if(input == decoded)
+        cout<<"Success ;)"<<endl;
+    else cout<<"Data Loss!!"<<endl;
+
 
     return 0;
 }
