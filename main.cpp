@@ -11,8 +11,8 @@
 /*
     Todo:
         implement file handling
-            1. add cli parameter for file name
-            2. read file and compress
+            1. add cli parameter for file name 
+            2. read file and compress - done
             3. write to a new comperssed file
 
 */
