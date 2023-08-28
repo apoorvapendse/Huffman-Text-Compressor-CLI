@@ -3,14 +3,18 @@
 #include <queue>
 #include<unordered_map>
 #include <vector>
+#include <cstring>
+#include <fstream>
+
+#define VERSION 2.0.0
 
 /*
     Todo:
-        get char freq - done
-        build huff tree - done
-        write encode function which returns a bin string - done
-        write decode function - done
-        create the argc argv functionality
+        implement file handling
+            1. add cli parameter for file name 
+            2. read file and compress - done
+            3. write to a new comperssed file
+
 */
 
 using namespace std;
@@ -46,6 +50,24 @@ map<char, int> charFreq(string str){
     //     ++it;
     // }
     
+    return freqTable;
+}
+
+// overloaded function which creates freqTable with file
+map<char, int> charFreq(ifstream &text){
+    map<char, int> freqTable;
+    char ch;
+        while(text.get(ch)){
+            freqTable[ch]++;
+        }
+
+    // printing the freqTable map
+    // this code should be remove afterwards
+    map<char, int>:: iterator it = freqTable.begin();;
+    while (it != freqTable.end()){
+        cout << "Key: " << it->first << " Value: " << it->second << std::endl;
+        ++it;
+    }
     return freqTable;
 }
 
@@ -138,6 +160,15 @@ string createEncodedString(string para, unordered_map<char,string>&HuffMap){
     return encoded;
 }
 
+string createEncodedString(ifstream &text, unordered_map<char,string>&HuffMap){
+    string encoded = "";
+    char ch;
+    while(text.get(ch)){
+        encoded += HuffMap[ch];
+    }
+    return encoded;
+}
+
 string decodeEncodedString(string encodedStr,unordered_map<char,string>&HuffMap){
     string currentHuffStr = "";
     string decoded = "";
@@ -199,43 +230,79 @@ int main(int argc, char** argv){
     // string para = string("linus benedict torvalds is a finnish software engineer who is the creator and, historically, the lead developer of the linux kernel, used by linux distributions and other operating systems such as android. he also created the distributed version control system git");
 
     // if there are insufficient parameters
+    /*
     if(argc != 3){
         cout<<"usage:"<<endl;
         cout<<"./main -parameter \"text that will be compressed\""<<endl;
         cout<<"parameters:\n\t-e : encode given text string\n\t-d : decode given bin string"<<endl;
         return 1;
     }
+    */
     // if there are sufficient parameters
-    // following block calls both the encode and decode functionality
-    else{
-        // storing text passed as argument into a string
-        string input = argv[2];
 
-        // creating char frequencey map and huffman tree
-        map<char, int> freqTable = charFreq(input);
+    // following block for file handling
+    // if(strcmp(argv[1], "-f") == 0){
+        
+        ifstream text;
+        // text.open(argv[2]);
+        text.open("linusRizzLord.txt");
+        if (!text.is_open()) {
+            std::cout << "File not found." << std::endl;
+            return 1; // Return a non-zero value to indicate an error
+        }
+
+    // creating char frequencey map and huffman tree
+        map<char, int> freqTable = charFreq(text);
         node* huffRoot = BuildHuffTree(freqTable);
 
-        // creating huffMap from huffman tree
+    // creating huffMap from huffman tree
         cout<<"Char to Bin Mapping"<<endl;
         unordered_map<char,string> huffMap;
         buildCharToBinaryMapping(huffRoot, "", huffMap);
 
-        printSummary(input.length(), huffMap, input);
+        // printSummary(input.length(), huffMap, input);
 
         // encoding the input string
-        string encoded =  createEncodedString(input, huffMap);
-        cout<<endl<<"Encoded string: "<<encoded<<endl;
+        // text.seekg(0, ios::beg);        // set cursor to start of file
+        text.close();
+        text.open("linusRizzLord.txt");     // oddly closing and opening again solved problem
+        string encoded =  createEncodedString(text, huffMap);
+        cout<<"encoded string"<<encoded<<endl;
 
-        // decoding the input string
-        string decoded = decodeEncodedString(encoded, huffMap);
-        cout<<endl<<"Decoded string: "<<decoded<<endl;
+        // just need to figure out how to write bits to file
+        return 0;
+    // }
+/*
+    // following block for cli program
+    // storing text passed as argument into a string
+    string input = argv[2];
 
-        // comparing input and decoded string
-        cout<<"\nChecking data integrity after decompression..."<<endl;
-        if(input == decoded)
-            cout<<"Success ;)"<<endl;
-        else cout<<"Data Loss!!"<<endl;
-    }
+    // creating char frequencey map and huffman tree
+    map<char, int> freqTable = charFreq(input);
+    node* huffRoot = BuildHuffTree(freqTable);
+
+    // creating huffMap from huffman tree
+    cout<<"Char to Bin Mapping"<<endl;
+    unordered_map<char,string> huffMap;
+    buildCharToBinaryMapping(huffRoot, "", huffMap);
+
+    printSummary(input.length(), huffMap, input);
+
+    // encoding the input string
+    string encoded =  createEncodedString(input, huffMap);
+    cout<<endl<<"Encoded string: "<<encoded<<endl;
+
+    // decoding the input string
+    string decoded = decodeEncodedString(encoded, huffMap);
+    cout<<endl<<"Decoded string: "<<decoded<<endl;
+
+    // comparing input and decoded string
+    cout<<"\nChecking data integrity after decompression..."<<endl;
+    if(input == decoded)
+        cout<<"Success ;)"<<endl;
+    else cout<<"Data Loss!!"<<endl;
+
 
     return 0;
+*/
 }
