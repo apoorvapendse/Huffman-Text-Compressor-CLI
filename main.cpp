@@ -211,7 +211,7 @@ int main(int argc, char** argv){
         // storing text passed as argument into a string
         string input = argv[2];
 
-        // creating char frequencey map and huffman tree
+        // creating char frequencey map agnd huffman tree
         map<char, int> freqTable = charFreq(input);
         node* huffRoot = BuildHuffTree(freqTable);
 
