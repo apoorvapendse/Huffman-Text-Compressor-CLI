@@ -35,14 +35,6 @@ map<char, int> charFreq(string str)
     for (char i : str)
         freqTable[i]++;
 
-    // printing the freqTable map
-    // this code should be remove afterwards
-    // map<char, int>:: iterator it = freqTable.begin();;
-    // while (it != freqTable.end()){
-    //     cout << "Key: " << it->first << " Value: " << it->second << std::endl;
-    //     ++it;
-    // }
-
     return freqTable;
 }
 
@@ -84,7 +76,6 @@ node *BuildHuffTree(map<char, int> freqTable)
 {
     // creating a priority queue
     priority_queue<node *, vector<node *>, comp> pq;
-    // wtf is auto??
     for (auto pair : freqTable)
     {
         // adding nodes to priority queue in increasing order of frequency
@@ -131,7 +122,7 @@ void printSummary(int stringLength, unordered_map<char, string> &huffMap, string
     int mapSize = 0;
     for (auto pair : huffMap)
     {
-        // adding 8 for every iteration since ascii represn of every char takes 8 bits
+        // adding 8 for every iteration since ascii represent of every char takes 8 bits
         mapSize += 8 + pair.second.length();
         ;
     }
@@ -152,7 +143,6 @@ void buildCharToBinaryMapping(node *root, string bin, unordered_map<char, string
         return;
 
     buildCharToBinaryMapping(root->left, bin + "0", huffMap);
-    // jar current node cha character not equal to MrRightNa, then add it to the map along with its huffman bin reprsn
     if (root->ch != '\0')
     {
         cout << root->ch << " : " << bin << endl;
@@ -195,14 +185,13 @@ string decodeEncodedString(string encodedStr, unordered_map<char, string> &HuffM
             if (pair.second == currentHuffStr)
             {
                 decoded += pair.first;
-                currentHuffStr = ""; // reset currentHuffString karan key sapadli
+                currentHuffStr = "";
             }
         }
     }
     return decoded;
 }
 
-// unnecessary code
 // takes text and huffMap as input and outputs the bin string
 string encode(string para, unordered_map<char, string> huffMap)
 {
@@ -263,7 +252,6 @@ int main(int argc, char **argv){
     // following block for file handling
     ifstream text;
     text.open(argv[1]);
-    // text.open("linusRizzLord.txt");
     if (!text.is_open())
     {
         std::cout << "File not found." << std::endl;
