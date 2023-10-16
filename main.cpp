@@ -6,16 +6,7 @@
 #include <cstring>
 #include <fstream>
 
-#define VERSION 2.0.0
-
-/*
-    Todo:
-        implement file handling
-            1. add cli parameter for file name
-            2. read file and compress - done
-            3. write to a new comperssed file
-
-*/
+#define VERSION 3.0.0
 
 using namespace std;
 
@@ -43,14 +34,6 @@ map<char, int> charFreq(string str)
     map<char, int> freqTable;
     for (char i : str)
         freqTable[i]++;
-
-    // printing the freqTable map
-    // this code should be remove afterwards
-    // map<char, int>:: iterator it = freqTable.begin();;
-    // while (it != freqTable.end()){
-    //     cout << "Key: " << it->first << " Value: " << it->second << std::endl;
-    //     ++it;
-    // }
 
     return freqTable;
 }
@@ -93,7 +76,6 @@ node *BuildHuffTree(map<char, int> freqTable)
 {
     // creating a priority queue
     priority_queue<node *, vector<node *>, comp> pq;
-    // wtf is auto??
     for (auto pair : freqTable)
     {
         // adding nodes to priority queue in increasing order of frequency
@@ -140,7 +122,7 @@ void printSummary(int stringLength, unordered_map<char, string> &huffMap, string
     int mapSize = 0;
     for (auto pair : huffMap)
     {
-        // adding 8 for every iteration since ascii represn of every char takes 8 bits
+        // adding 8 for every iteration since ascii represent of every char takes 8 bits
         mapSize += 8 + pair.second.length();
         ;
     }
@@ -151,7 +133,7 @@ void printSummary(int stringLength, unordered_map<char, string> &huffMap, string
     cout << "Encoded length: " << encodedLength << endl;
     float ratio = float(encodedLength + mapSize) / float(decodedLength);
     cout << "Map size:" << mapSize << endl;
-    cout << "Size reduced to :" << ratio * 100 << "%" << endl;
+    cout << "Size reduced to :" << ratio * 100 << "% of initial size" << endl;
     cout << "Bits saved: " << decodedLength - (mapSize + encodedLength) << endl;
 }
 
@@ -161,7 +143,6 @@ void buildCharToBinaryMapping(node *root, string bin, unordered_map<char, string
         return;
 
     buildCharToBinaryMapping(root->left, bin + "0", huffMap);
-    // jar current node cha character not equal to MrRightNa, then add it to the map along with its huffman bin reprsn
     if (root->ch != '\0')
     {
         cout << root->ch << " : " << bin << endl;
@@ -204,14 +185,13 @@ string decodeEncodedString(string encodedStr, unordered_map<char, string> &HuffM
             if (pair.second == currentHuffStr)
             {
                 decoded += pair.first;
-                currentHuffStr = ""; // reset currentHuffString karan key sapadli
+                currentHuffStr = "";
             }
         }
     }
     return decoded;
 }
 
-// unnecessary code
 // takes text and huffMap as input and outputs the bin string
 string encode(string para, unordered_map<char, string> huffMap)
 {
@@ -259,27 +239,19 @@ vector<char> decode(node *root, string bin)
     return decodedText;
 }
 
-int main(int argc, char **argv)
-{
-    // string para = string("linus benedict torvalds is a finnish software engineer who is the creator and, historically, the lead developer of the linux kernel, used by linux distributions and other operating systems such as android. he also created the distributed version control system git");
-
+int main(int argc, char **argv){
     // if there are insufficient parameters
-    /*
-    if(argc != 3){
+
+    if(argc != 2){
         cout<<"usage:"<<endl;
-        cout<<"./main -parameter \"text that will be compressed\""<<endl;
-        cout<<"parameters:\n\t-e : encode given text string\n\t-d : decode given bin string"<<endl;
+        cout<<"./main \"file that will be compressed\""<<endl;
         return 1;
     }
-    */
     // if there are sufficient parameters
 
     // following block for file handling
-    // if(strcmp(argv[1], "-f") == 0){
-
     ifstream text;
-    // text.open(argv[2]);
-    text.open("linusRizzLord.txt");
+    text.open(argv[1]);
     if (!text.is_open())
     {
         std::cout << "File not found." << std::endl;
@@ -294,50 +266,28 @@ int main(int argc, char **argv)
     cout << "Char to Bin Mapping" << endl;
     unordered_map<char, string> huffMap;
     buildCharToBinaryMapping(huffRoot, "", huffMap);
-
-    // printSummary(input.length(), huffMap, input);
-
-    // encoding the input string
-    // text.seekg(0, ios::beg);        // set cursor to start of file
     text.close();
-    text.open("linusRizzLord.txt"); // oddly closing and opening again solved problem
+
+    text.open(argv[1]);
     string encoded = createEncodedString(text, huffMap);
-    cout << "encoded string" << encoded << endl;
+    text.close();
+    cout << "encoded string:\n" << encoded << endl;
 
-    // just need to figure out how to write bits to file
+    // decoding the input string
+    string decoded = decodeEncodedString(encoded, huffMap);
+    cout<<endl<<"Decoded string:\n"<<decoded<<endl;
+
+    text.open(argv[1]);
+    string fileContents;
+    string line;
+    
+    while (getline(text, line)) {
+        fileContents += line + '\n';
+    }
+    text.close();
+
+    printSummary(fileContents.length(), huffMap, fileContents);
+
     return 0;
-    // }
-    /*
-        // following block for cli program
-        // storing text passed as argument into a string
-        string input = argv[2];
 
-        // creating char frequencey map and huffman tree
-        map<char, int> freqTable = charFreq(input);
-        node* huffRoot = BuildHuffTree(freqTable);
-
-        // creating huffMap from huffman tree
-        cout<<"Char to Bin Mapping"<<endl;
-        unordered_map<char,string> huffMap;
-        buildCharToBinaryMapping(huffRoot, "", huffMap);
-
-        printSummary(input.length(), huffMap, input);
-
-        // encoding the input string
-        string encoded =  createEncodedString(input, huffMap);
-        cout<<endl<<"Encoded string: "<<encoded<<endl;
-
-        // decoding the input string
-        string decoded = decodeEncodedString(encoded, huffMap);
-        cout<<endl<<"Decoded string: "<<decoded<<endl;
-
-        // comparing input and decoded string
-        cout<<"\nChecking data integrity after decompression..."<<endl;
-        if(input == decoded)
-            cout<<"Success ;)"<<endl;
-        else cout<<"Data Loss!!"<<endl;
-
-
-        return 0;
-    */
 }
