@@ -54,7 +54,7 @@ map<char, int> charFreq(ifstream &text)
     ;
     while (it != freqTable.end())
     {
-        cout << "Key: " << it->first << " Value: " << it->second << std::endl;
+        cout << "Key: " << it->first << " Value: " << it->second << endl;
         ++it;
     }
     return freqTable;
@@ -239,6 +239,32 @@ vector<char> decode(node *root, string bin)
     return decodedText;
 }
 
+// function to print binary tree on terminal
+void printBT(const string& prefix, const node* ptr, bool isLeft)
+{
+    if(ptr != nullptr )
+    {
+        cout << prefix;
+
+        cout << (isLeft ? "|--" : "L--" );
+
+        // print the value of the ptr
+        if(ptr->ch == '\0')
+            cout << "\\0" << endl;
+        else
+            cout << ptr->ch << " " << ptr->freq << endl;
+
+        // enter the next tree level - left and right branch
+        printBT( prefix + (isLeft ? "|  " : "    "), ptr->left, true);
+        printBT( prefix + (isLeft ? "|  " : "    "), ptr->right, false);
+    }
+}
+
+void printBT(const node* node)
+{
+    printBT("", node, false);
+}
+
 int main(int argc, char **argv){
     // if there are insufficient parameters
 
@@ -254,13 +280,15 @@ int main(int argc, char **argv){
     text.open(argv[1]);
     if (!text.is_open())
     {
-        std::cout << "File not found." << std::endl;
+        cout << "File not found." << endl;
         return 1; // Return a non-zero value to indicate an error
     }
 
     // creating char frequencey map and huffman tree
     map<char, int> freqTable = charFreq(text);
     node *huffRoot = BuildHuffTree(freqTable);
+    cout << endl << "The generated Huffman Tree: " << endl;
+    printBT(huffRoot);
 
     // creating huffMap from huffman tree
     cout << "Char to Bin Mapping" << endl;
